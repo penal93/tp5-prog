@@ -3,6 +3,10 @@
 // Marcos Castilho, inclui as structs no arquivo.c, Out 2025
 // Implementação com lista encadeada simples
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "fprio.h"
+
 // descreve um nodo da fila de prioridades
 // NAO altere estas estruturas
 struct fpnodo_t
@@ -37,7 +41,7 @@ struct fprio_t *fprio_cria (){
 
 struct fprio_t *fprio_destroi (struct fprio_t *f){
   struct fpnodo_t *atual = f->prim;
-  struct fpnodo_t *prox;
+  struct fpnodo_t *prox = atual;
 
   while (prox){
     prox = atual->prox;
@@ -56,42 +60,72 @@ struct fprio_t *fprio_destroi (struct fprio_t *f){
 }
 
 int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
-  struct fpnodo_t *novoNodo = malloc (sizeof (struct fpnodo_t));
-  
-  if (!f->prim){
-    f-prim = novoNodo;
-    novoNodo->prox = NULL;
-  }
+  if (!f || !item)
+    return -1;
 
-  struct fpnodo_t *atual = f->prim; 
-  struct fpnodo_t *ant;
-
-  while (atual->prio >= prio){
-    if (item = atual->item)
-      return -1;
-    
-    ant = atual;
-    atual = atual-prox;
-  }
-
-  ant->prox = novoNodo;
-  novoNodo->prox = atual;
+  struct fpnodo_t *novoNodo = malloc(sizeof (struct fpnodo_t));
 
   novoNodo->item = item;
-  novoNodo->tipo = tipo;
   novoNodo->prio = prio;
+  novoNodo->tipo = tipo;
+
+  if (!f->num || f->prim->prio > prio){
+    novoNodo->prox = f->prim;
+    f->prim = novoNodo;
+
+    f->num ++;
+
+    return f->num;
+  }
+
+  struct fpnodo_t *atual = f->prim;
+
+  while (atual->prox && atual->prox->prio <= prio){
+    if (atual->item == item)
+      return -1;
+
+    atual = atual->prox;
+  }
+
+  novoNodo->prox = atual->prox;
+  atual->prox = novoNodo;
 
   f->num ++;
 
   return f->num;
 }
 
+void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
+  if (!f->num)
+    return NULL;
+
+  *tipo = f->prim->tipo;
+  *prio = f->prim->prio;
+  struct fpnodo_t *removido = f->prim;
+
+  f->prim = f->prim->prox;
+
+  void *itemRemovido = removido->item;
+  free(removido);
+
+  f->num --;
+
+  return itemRemovido;
+}
 
 int fprio_tamanho (struct fprio_t *f){
-  if (!f->num)
+  if (!f)
     return -1;
 
   return f->num;
 }
 
+void fprio_imprime (struct fprio_t *f){
+  struct fpnodo_t *atual = f->prim;
+
+  while (atual){
+    printf("(%d %d) ", atual->tipo, atual->prio);
+    atual = atual->prox;
+  }
+}
 
