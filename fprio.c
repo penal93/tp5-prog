@@ -104,7 +104,10 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
 }
 
 void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
-  if (!f->num || !f || !prio)
+  if (!f)
+    return NULL;
+
+  if (!f->num || !tipo || !prio)
     return NULL;
 
   *tipo = f->prim->tipo;
@@ -129,9 +132,14 @@ int fprio_tamanho (struct fprio_t *f){
 }
 
 void fprio_imprime (struct fprio_t *f){
-  struct fpnodo_t *atual = f->prim;
+  struct fpnodo_t *atual = f->prim->prox;
 
   while (atual){
+    if (!atual->prox){
+        printf("(%d %d)", atual->tipo, atual->prio);
+        return;
+    }
+
     printf("(%d %d) ", atual->tipo, atual->prio);
     atual = atual->prox;
   }
