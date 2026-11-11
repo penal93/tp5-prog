@@ -222,10 +222,16 @@ int main ()
   if (item)
     erro ("retira com fila NULL não retornou erro") ;
 
+
+  printf("bla \n");
+
   // retira com tipo NULL
   item = fprio_retira (fp, NULL, &prio) ;
   if (item)
     erro ("retira com tipo NULL não retornou erro") ;
+
+
+  printf("bla \n");
 
   // retira com prioridade NULL
   item = fprio_retira (fp, &tipo, NULL) ;

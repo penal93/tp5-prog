@@ -63,7 +63,19 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
   if (!f || !item)
     return -1;
 
+  struct fpnodo_t *atual = f->prim;
+
+  while (atual){
+    if (atual->item == item)
+      return -1;
+
+    atual = atual->prox;
+  }
+
   struct fpnodo_t *novoNodo = malloc(sizeof (struct fpnodo_t));
+
+  if (!novoNodo)
+    return -1;
 
   novoNodo->item = item;
   novoNodo->prio = prio;
@@ -78,14 +90,10 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     return f->num;
   }
 
-  struct fpnodo_t *atual = f->prim;
+  atual = f->prim;
 
-  while (atual->prox && atual->prox->prio <= prio){
-    if (atual->item == item)
-      return -1;
-
+  while (atual->prox && atual->prox->prio <= prio)
     atual = atual->prox;
-  }
 
   novoNodo->prox = atual->prox;
   atual->prox = novoNodo;
@@ -96,7 +104,7 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
 }
 
 void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
-  if (!f->num)
+  if (!f->num || !f || !prio)
     return NULL;
 
   *tipo = f->prim->tipo;
