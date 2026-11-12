@@ -132,12 +132,12 @@ int fprio_tamanho (struct fprio_t *f){
 }
 
 void fprio_imprime (struct fprio_t *f){
-  struct fpnodo_t *atual = f->prim->prox;
+  struct fpnodo_t *atual = f->prim;
 
   while (atual){
-    if (!atual->prox){
-        printf("(%d %d)", atual->tipo, atual->prio);
-        return;
+    if (f->num == 1 || !atual->prox){
+      printf("(%d %d)", atual->tipo, atual->prio);
+      return;
     }
 
     printf("(%d %d) ", atual->tipo, atual->prio);
